@@ -37,7 +37,7 @@ public:
 
 	const T& getValue() const;
 
-	friend std::ostream& operator<<(std::ostream& os, const MaxHeap<T>& heap);
+	void print() const;
 };
 
 /* Create a childless heap node */
@@ -71,15 +71,6 @@ template<typename T>
 inline size_t MaxHeap<T>::_getRightIndex() const
 {
 	return (this->_index + 1) * 2;
-}
-
-/*
-Get the value of this node from the _items vector.
-*/
-template<typename T>
-inline const T& MaxHeap<T>::getValue() const
-{
-	return this->_items->at(this->_index);
 }
 
 /*
@@ -244,20 +235,24 @@ inline size_t MaxHeap<T>::size() const
 	return this->_items->size();
 }
 
+
 /*
-Print all of the values in the items vector.
-Input os: ouput stream to print the values to.
-Input heap: the heap to print from.
-Output: os.
+Get the value of this node from the _items vector.
 */
 template<typename T>
-std::ostream& operator<<(std::ostream& os, const MaxHeap<T>& heap)
+inline const T& MaxHeap<T>::getValue() const
 {
-	auto end = heap._items->end();
+	return this->_items->at(this->_index);
+}
 
-	for (auto i = heap._items->begin(); i != end; i++)
+/* print the items vector */
+template<typename T>
+inline void MaxHeap<T>::print() const
+{
+	auto end = this->_items->end();
+
+	for (auto i = this->_items->begin(); i != end; i++)
 	{
-		os << *i << std::endl;
+		std::cout << *i << std::endl;
 	}
-	return os;
 }

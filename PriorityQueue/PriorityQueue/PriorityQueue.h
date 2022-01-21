@@ -16,7 +16,7 @@ public:
 	const T& top() const;
 	bool empty() const;
 
-	friend std::ostream& operator<<(std::ostream& os, const PriorityQueue<T>& q);
+	void print() const;
 };
 
 template<typename T>
@@ -77,12 +77,12 @@ inline bool PriorityQueue<T>::empty() const
 	return this->_root->size() == 0;
 }
 
+/* print the queue */
 template<typename T>
-std::ostream& operator<<(std::ostream& os, const PriorityQueue<T>& q)
+inline void PriorityQueue<T>::print() const
 {
-	if (q._root)
+	if (this->_root)
 	{
-		os << q._root;
+		this->_root->print();
 	}
-	return os;
 }

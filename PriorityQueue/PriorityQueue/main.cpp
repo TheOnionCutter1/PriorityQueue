@@ -4,7 +4,7 @@
 
 enum class Option
 {
-	ADD,
+	ADD=1,
 	REMOVE,
 	DEMONSTRATE,
 	EXIT
@@ -23,7 +23,8 @@ Option showMenu(const PriorityQueue<int>& q)
 	
 	std::cout << "\nWelcome!\n";
 	std::cout << "Your queue:\n";
-	std::cout << q;
+	q.print();
+	std::cout << '\n';
 	std::cout << "1. Push a number\n";
 	std::cout << "2. Pop the first number\n";
 	std::cout << "3. Show a demonstration of the queue using threads\n";
@@ -102,7 +103,7 @@ void handleChoice(PriorityQueue<int>& q, Option choice)
 		q.pop();
 		break;
 	case Option::DEMONSTRATE:
-		demonstrateUsingThread();
+		demonstrateUsingThread(q);
 		break;
 	case Option::EXIT:
 		std::cout << "Bye\n";
