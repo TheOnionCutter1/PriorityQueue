@@ -132,6 +132,7 @@ template<typename T>
 inline MaxHeap<T>::~MaxHeap()
 {
 	delete this->_items;
+	this->_items = nullptr;
 	// delete all nodes recursively
 	if (this->_left)
 	{
