@@ -51,24 +51,26 @@ void pushToQueue(PriorityQueue<int>& q)
 	const int MAX = 50;
 	int num = 0;
 
+	srand(time(NULL));
 	for (int i = 0; i < 2; i++)
 	{
-		for (int j = 0; j < 10; j++)
+		for (int j = 0; j < 5; j++)
 		{
-			std::lock_guard<std::mutex> lck(queueLock);
+			queueLock.lock();
 			num = rand() % (MAX + 1);
 			q.push(num);
 			std::cout << "Pushed " << num << " to the queue\n";
 			qCondition.notify_one();
-			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			queueLock.unlock();
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
-		std::this_thread::sleep_for(std::chrono::seconds(2));
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
 }
 
 void popFromQueue(PriorityQueue<int>& q)
 {
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < 10; i++)
 	{
 		std::unique_lock<std::mutex> lck(queueLock);
 		if (q.empty())
@@ -77,6 +79,8 @@ void popFromQueue(PriorityQueue<int>& q)
 		}
 		std::cout << "Popping " << q.top() << " From the queue\n";
 		q.pop();
+		lck.unlock();
+		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 	}
 }
 
@@ -90,9 +94,8 @@ void demonstrateUsingThread(PriorityQueue<int>& q)
 	std::thread pusher(pushToQueue, std::ref(q));
 	std::thread popper(popFromQueue, std::ref(q));
 
-	std::this_thread::sleep_for(std::chrono::seconds(5));
-	pusher.join();
 	popper.join();
+	pusher.join();
 }
 
 /*
@@ -107,7 +110,10 @@ void handleChoice(PriorityQueue<int>& q, Option choice)
 		addNumber(q);
 		break;
 	case Option::REMOVE:
-		q.pop();
+		if (!q.empty())
+		{
+			q.pop();
+		}
 		break;
 	case Option::DEMONSTRATE:
 		demonstrateUsingThread(q);
@@ -126,7 +132,6 @@ int main()
 	PriorityQueue<int> queue;
 	Option choice{};
 
-	srand(time(NULL));
 	do
 	{
 		choice = showMenu(queue);
