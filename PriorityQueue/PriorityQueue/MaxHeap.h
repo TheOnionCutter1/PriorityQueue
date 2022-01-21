@@ -16,10 +16,14 @@ private:
 	// private methods
 	MaxHeap(std::vector<T>* items, size_t index);
 
-	size_t getLeftIndex() const;
-	size_t getRightIndex() const;
+	size_t _getLeftIndex() const;
+	size_t _getRightIndex() const;
 
-	void insert(MaxHeap<T>* node);
+	const T& _getValue() const;
+
+	void _swap(bool left);
+
+	bool insert(MaxHeap<T>* node);
 public:
 	MaxHeap(const T& value);
 	~MaxHeap();
@@ -27,7 +31,7 @@ public:
 	void insert(const T& value);
 	void extractMax();
 
-	T getMax() const;
+	const T& getMax() const;
 };
 
 /* Create a childless heap node */
@@ -41,25 +45,75 @@ inline MaxHeap<T>::MaxHeap(std::vector<T>* items, size_t index) :
 
 /* Get the index of the left child, using this->_index */
 template<typename T>
-inline size_t MaxHeap<T>::getLeftIndex() const
+inline size_t MaxHeap<T>::_getLeftIndex() const
 {
 	return (this->_index + 1) * 2 - 1;
 }
 
 /* Get the index of the right child, using this->_index */
 template<typename T>
-inline size_t MaxHeap<T>::getRightIndex() const
+inline size_t MaxHeap<T>::_getRightIndex() const
 {
 	return (this->_index + 1) * 2;
 }
 
 /*
-Insert a new node to the correct place in the heap.
-Input: the node to insert.
+Get the value of this node from the _items vector.
 */
 template<typename T>
-inline void MaxHeap<T>::insert(MaxHeap<T>* node)
+inline const T& MaxHeap<T>::_getValue() const
 {
+	return (*this->_items)[this->_index];
+}
+
+/*
+Swap the values this and one of its childs.
+Input: whether to swap with the left child.
+*/
+template<typename T>
+inline void MaxHeap<T>::_swap(bool left)
+{
+	MaxHeap<T>* childToSwap = left ? this->_left : this->_right;
+	size_t tmpIndex = this->_index;
+	T tmpValue = this->_items->at(tmpIndex);
+
+	this->_items->at(this->_index) = childToSwap->_getValue();
+	childToSwap->_items->at(childToSwap->_index) = tmpValue;
+
+	this->_index = childToSwap->_index;
+	childToSwap->_index = tmpIndex;
+}
+
+/*
+Insert a new node to the correct place in the heap.
+Input: the node to insert.
+Ouput: whether the node was inserted.
+*/
+template<typename T>
+inline bool MaxHeap<T>::insert(MaxHeap<T>* node)
+{
+	bool left = false;
+
+	if (this->_getLeftIndex() == node->_index)
+	{
+		this->_left = node;
+	}
+	else if (this->_getRightIndex() == node->_index)
+	{
+		this->_right = node;
+	}
+	// if the node can't be inserted to either of the children
+	else if (!(this->_left && this->_left->insert(node)) &&
+		!(this->_right && this->_right->insert(node)))
+	{
+		return false;
+	}
+	// if we reached here, the node has been inserted.
+	if (left || this->_getValue() < this->_right->_getValue())
+	{
+		this->_swap(left);
+	}
+	return true;
 }
 
 template<typename T>
@@ -91,7 +145,7 @@ inline void MaxHeap<T>::insert(const T& value)
 }
 
 template<typename T>
-inline T MaxHeap<T>::getMax() const
+inline const T& MaxHeap<T>::getMax() const
 {
 	return (*this->_items)[0];
 }
