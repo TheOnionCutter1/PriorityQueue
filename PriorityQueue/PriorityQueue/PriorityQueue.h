@@ -10,6 +10,12 @@ public:
 	PriorityQueue();
 	~PriorityQueue();
 
+	void push(const T& value);
+	void pop();
+
+	const T& top() const;
+	bool empty() const;
+
 	friend std::ostream& operator<<(std::ostream& os, const PriorityQueue<T>& q);
 };
 
