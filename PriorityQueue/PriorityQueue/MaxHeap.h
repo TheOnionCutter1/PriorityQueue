@@ -165,8 +165,11 @@ inline MaxHeap<T>::MaxHeap(const T& value)
 template<typename T>
 inline MaxHeap<T>::~MaxHeap()
 {
-	delete this->_items;
-	this->_items = nullptr;
+	if (this->_index == 0)
+	{
+		delete this->_items;
+		this->_items = nullptr;
+	}
 	// delete all nodes recursively
 	if (this->_left)
 	{
@@ -185,8 +188,8 @@ Input: the value.
 template<typename T>
 inline void MaxHeap<T>::insert(const T& value)
 {
-	this->_insert(new MaxHeap<T>(this->_items, this->_items->size()));
 	this->_items->push_back(value);
+	this->_insert(new MaxHeap<T>(this->_items, this->_items->size() - 1));
 }
 
 /*
