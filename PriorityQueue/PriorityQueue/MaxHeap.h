@@ -15,6 +15,11 @@ private:
 
 	// private methods
 	MaxHeap(std::vector<T>* items, size_t index);
+
+	size_t getLeftIndex() const;
+	size_t getRightIndex() const;
+
+	void insert(MaxHeap<T>* node);
 public:
 	MaxHeap(T value);
 	~MaxHeap();
@@ -32,6 +37,29 @@ inline MaxHeap<T>::MaxHeap(std::vector<T>* items, size_t index) :
 {
 	this->_left = nullptr;
 	this->_right = nullptr;
+}
+
+/* Get the index of the left child, using this->_index */
+template<typename T>
+inline size_t MaxHeap<T>::getLeftIndex() const
+{
+	return (this->_index + 1) * 2 - 1;
+}
+
+/* Get the index of the right child, using this->_index */
+template<typename T>
+inline size_t MaxHeap<T>::getRightIndex() const
+{
+	return (this->_index + 1) * 2;
+}
+
+/*
+Insert a new node to the correct place in the heap.
+Input: the node to insert.
+*/
+template<typename T>
+inline void MaxHeap<T>::insert(MaxHeap<T>* node)
+{
 }
 
 template<typename T>
@@ -58,6 +86,8 @@ Input: the value.
 template<typename T>
 inline void MaxHeap<T>::insert(T value)
 {
+	this->insert(new MaxHeap<T>(this->_items, this->_items->size()));
+	this->_items->push_back(value);
 }
 
 template<typename T>
