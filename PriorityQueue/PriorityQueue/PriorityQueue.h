@@ -10,7 +10,7 @@ public:
 	PriorityQueue();
 	~PriorityQueue();
 
-	friend std::ostream& operator<<(std::ostream& os, const PriorityQueue& q);
+	friend std::ostream& operator<<(std::ostream& os, const PriorityQueue<T>& q);
 };
 
 template<typename T>
@@ -21,4 +21,11 @@ PriorityQueue<T>::PriorityQueue()
 template<typename T>
 PriorityQueue<T>::~PriorityQueue()
 {
+}
+
+template<typename T>
+std::ostream& operator<<(std::ostream& os, const PriorityQueue<T>& q)
+{
+	os << q._root;
+	return os;
 }

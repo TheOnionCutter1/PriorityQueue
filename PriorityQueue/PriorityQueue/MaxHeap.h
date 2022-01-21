@@ -19,7 +19,6 @@ private:
 	size_t _getLeftIndex() const;
 	size_t _getRightIndex() const;
 
-	const T& _getValue() const;
 
 	void _swap(bool left);
 
@@ -31,7 +30,9 @@ public:
 	void insert(const T& value);
 	void extractMax();
 
-	const T& getMax() const;
+	const T& getValue() const;
+
+	friend std::ostream& operator<<(std::ostream& os, const MaxHeap<T>& heap);
 };
 
 /* Create a childless heap node */
@@ -61,7 +62,7 @@ inline size_t MaxHeap<T>::_getRightIndex() const
 Get the value of this node from the _items vector.
 */
 template<typename T>
-inline const T& MaxHeap<T>::_getValue() const
+inline const T& MaxHeap<T>::getValue() const
 {
 	return (*this->_items)[this->_index];
 }
@@ -77,7 +78,7 @@ inline void MaxHeap<T>::_swap(bool left)
 	size_t tmpIndex = this->_index;
 	T tmpValue = this->_items->at(tmpIndex);
 
-	this->_items->at(this->_index) = childToSwap->_getValue();
+	this->_items->at(this->_index) = childToSwap->getValue();
 	childToSwap->_items->at(childToSwap->_index) = tmpValue;
 
 	this->_index = childToSwap->_index;
@@ -109,7 +110,7 @@ inline bool MaxHeap<T>::insert(MaxHeap<T>* node)
 		return false;
 	}
 	// if we reached here, the node has been inserted.
-	if (left || this->_getValue() < this->_right->_getValue())
+	if (left || this->getValue() < this->_right->getValue())
 	{
 		this->_swap(left);
 	}
@@ -153,8 +154,20 @@ inline void MaxHeap<T>::insert(const T& value)
 	this->_items->push_back(value);
 }
 
+/*
+Print all of the values in the items vector.
+Input os: ouput stream to print the values to.
+Input heap: the heap to print from.
+Output: os.
+*/
 template<typename T>
-inline const T& MaxHeap<T>::getMax() const
+std::ostream& operator<<(std::ostream& os, const MaxHeap<T>& heap)
 {
-	return (*this->_items)[0];
+	auto end = heap._items->end();
+
+	for (auto i = heap._items->begin(); i != end; i++)
+	{
+		os << *i << std::endl;
+	}
+	return os;
 }
