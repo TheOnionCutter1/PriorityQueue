@@ -5,7 +5,7 @@ template<typename T>
 class PriorityQueue
 {
 private:
-	MaxHeap<T> _root;
+	MaxHeap<T>* _root;
 public:
 	PriorityQueue();
 	~PriorityQueue();
@@ -16,11 +16,13 @@ public:
 template<typename T>
 PriorityQueue<T>::PriorityQueue()
 {
+	this->_root = nullptr;
 }
 
 template<typename T>
-PriorityQueue<T>::~PriorityQueue()
+inline PriorityQueue<T>::~PriorityQueue()
 {
+	delete this->_root;
 }
 
 template<typename T>
