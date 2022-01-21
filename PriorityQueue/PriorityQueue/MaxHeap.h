@@ -205,9 +205,35 @@ template<typename T>
 inline void MaxHeap<T>::extractMax()
 {
 	size_t lastIndex = this->_items->size() - 1;
-	MaxHeap<T>* last = this->_findLast(lastIndex);
+	MaxHeap<T>* temp = this->_findLast(lastIndex);
+	bool left = false; // who to swap with
 
-	(*this->_items)[this->_index] = last->getValue();
+	this->_setValue(temp->getValue());
+	delete temp;
+	temp = this;
+	// while temp has at least one child
+	while (temp->_left || temp->_right)
+	{
+		if (temp->_left)
+		{
+			if (temp->_right)
+			{
+				// prepare for a swap with the larger child
+				left = temp->_right->getValue() < temp->_left->getValue() ?
+					temp->_left : temp->_right;
+			}
+			else
+			{
+				left = true;
+			}
+		}
+		else if (temp->_right)
+		{
+			left = false;
+		}
+		temp->_swap(left);
+		temp = left ? temp->_left : temp->_right;
+	}
 }
 
 /* get the size of the heap */
