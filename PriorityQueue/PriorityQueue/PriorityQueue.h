@@ -80,6 +80,9 @@ inline bool PriorityQueue<T>::empty() const
 template<typename T>
 std::ostream& operator<<(std::ostream& os, const PriorityQueue<T>& q)
 {
-	os << q._root;
+	if (q._root)
+	{
+		os << q._root;
+	}
 	return os;
 }
