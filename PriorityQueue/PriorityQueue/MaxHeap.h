@@ -21,10 +21,10 @@ private:
 
 	void insert(MaxHeap<T>* node);
 public:
-	MaxHeap(T value);
+	MaxHeap(const T& value);
 	~MaxHeap();
 	
-	void insert(T value);
+	void insert(const T& value);
 	void extractMax();
 
 	T getMax() const;
@@ -63,7 +63,7 @@ inline void MaxHeap<T>::insert(MaxHeap<T>* node)
 }
 
 template<typename T>
-inline MaxHeap<T>::MaxHeap(T value)
+inline MaxHeap<T>::MaxHeap(const T& value)
 {
 	this->_items = new std::vector<T>();
 	this->_index = 0;
@@ -84,7 +84,7 @@ Insert a value to the heap.
 Input: the value.
 */
 template<typename T>
-inline void MaxHeap<T>::insert(T value)
+inline void MaxHeap<T>::insert(const T& value)
 {
 	this->insert(new MaxHeap<T>(this->_items, this->_items->size()));
 	this->_items->push_back(value);
