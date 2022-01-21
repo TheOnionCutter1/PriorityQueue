@@ -81,7 +81,6 @@ template<typename T>
 inline void MaxHeap<T>::_swap(bool left)
 {
 	MaxHeap<T>* childToSwap = left ? this->_left : this->_right;
-	//size_t tmpIndex = this->_index;
 	T tmpValue = this->_items->at(this->_index);
 
 	this->_setValue(childToSwap->getValue());
@@ -208,6 +207,7 @@ inline void MaxHeap<T>::extractMax()
 	size_t lastIndex = this->_items->size() - 1;
 	MaxHeap<T>* temp = this->_extractLast(lastIndex);
 	bool left = false; // who to swap with
+	bool swapped = true;
 
 	this->_setValue(temp->getValue());
 	delete temp;
@@ -215,15 +215,15 @@ inline void MaxHeap<T>::extractMax()
 
 	temp = this;
 	// while temp has at least one child
-	while (temp->_left || temp->_right)
+	while (swapped)
 	{
-		if (temp->_left)
+		// Check if a swap is necessary
+		if (temp->_left && temp->getValue() < temp->_left->getValue())
 		{
-			if (temp->_right)
+			if (temp->_right && temp->getValue() < temp->_right->getValue())
 			{
 				// prepare for a swap with the larger child
-				left = temp->_right->getValue() < temp->_left->getValue() ?
-					temp->_left : temp->_right;
+				left = temp->_right->getValue() < temp->_left->getValue();
 			}
 			else
 			{
@@ -234,8 +234,15 @@ inline void MaxHeap<T>::extractMax()
 		{
 			left = false;
 		}
-		temp->_swap(left);
-		temp = left ? temp->_left : temp->_right;
+		else
+		{
+			swapped = false;
+		}
+		if (swapped)
+		{
+			temp->_swap(left);
+			temp = left ? temp->_left : temp->_right;
+		}
 	}
 }
 
