@@ -15,6 +15,7 @@ public:
 
 	const T& top() const;
 	bool empty() const;
+	size_t size() const;
 
 	void print() const;
 };
@@ -74,7 +75,18 @@ inline const T& PriorityQueue<T>::top() const
 template<typename T>
 inline bool PriorityQueue<T>::empty() const
 {
-	return this->_root->size() == 0;
+	return !this->_root;
+}
+
+/* get the size of the queue */
+template<typename T>
+inline size_t PriorityQueue<T>::size() const
+{
+	if (this->_root)
+	{
+		return this->_root->size();
+	}
+	return 0;
 }
 
 /* print the queue */
