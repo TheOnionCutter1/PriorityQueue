@@ -24,7 +24,7 @@ private:
 
 	bool _insert(MaxHeap<T>* node);
 
-	MaxHeap<T>* _findLast(size_t lastIndex);
+	MaxHeap<T>* _extractLast(size_t lastIndex);
 
 public:
 	MaxHeap(const T& value);
@@ -81,14 +81,11 @@ template<typename T>
 inline void MaxHeap<T>::_swap(bool left)
 {
 	MaxHeap<T>* childToSwap = left ? this->_left : this->_right;
-	size_t tmpIndex = this->_index;
-	T tmpValue = this->_items->at(tmpIndex);
+	//size_t tmpIndex = this->_index;
+	T tmpValue = this->_items->at(this->_index);
 
 	this->_setValue(childToSwap->getValue());
 	childToSwap->_setValue(tmpValue);
-
-	this->_index = childToSwap->_index;
-	childToSwap->_index = tmpIndex;
 }
 
 /*
@@ -126,10 +123,11 @@ inline bool MaxHeap<T>::_insert(MaxHeap<T>* node)
 
 /*
 Find the last node (the node that represents the last element in the vector).
+When found, it will be disconnected from the heap and returned.
 Input: the index of the last element
 */
 template<typename T>
-inline MaxHeap<T>* MaxHeap<T>::_findLast(size_t lastIndex)
+inline MaxHeap<T>* MaxHeap<T>::_extractLast(size_t lastIndex)
 {
 	MaxHeap<T>* last = nullptr;
 
@@ -141,11 +139,19 @@ inline MaxHeap<T>* MaxHeap<T>::_findLast(size_t lastIndex)
 	{
 		if (this->_left)
 		{
-			last = this->_left->_findLast(lastIndex);
+			last = this->_left->_extractLast(lastIndex);
+			if (this->_left == last)
+			{
+				this->_left = nullptr;
+			}
 		}
 		if (!last && this->_right)
 		{
-			last = this->_right->_findLast(lastIndex);
+			last = this->_right->_extractLast(lastIndex);
+			if (this->_right == last)
+			{
+				this->_right = nullptr;
+			}
 		}
 	}
 	return last;
@@ -200,11 +206,13 @@ template<typename T>
 inline void MaxHeap<T>::extractMax()
 {
 	size_t lastIndex = this->_items->size() - 1;
-	MaxHeap<T>* temp = this->_findLast(lastIndex);
+	MaxHeap<T>* temp = this->_extractLast(lastIndex);
 	bool left = false; // who to swap with
 
 	this->_setValue(temp->getValue());
 	delete temp;
+	this->_items->pop_back();
+
 	temp = this;
 	// while temp has at least one child
 	while (temp->_left || temp->_right)
