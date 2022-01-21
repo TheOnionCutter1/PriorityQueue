@@ -16,13 +16,16 @@ private:
 	// private methods
 	MaxHeap(std::vector<T>* items, size_t index);
 
+	void _setValue(const T& value);
+
 	size_t _getLeftIndex() const;
 	size_t _getRightIndex() const;
-
-
 	void _swap(bool left);
 
-	bool insert(MaxHeap<T>* node);
+	bool _insert(MaxHeap<T>* node);
+
+	MaxHeap<T>* _findLast(size_t lastIndex);
+
 public:
 	MaxHeap(const T& value);
 	~MaxHeap();
@@ -91,7 +94,7 @@ Input: the node to insert.
 Ouput: whether the node was inserted.
 */
 template<typename T>
-inline bool MaxHeap<T>::insert(MaxHeap<T>* node)
+inline bool MaxHeap<T>::_insert(MaxHeap<T>* node)
 {
 	bool left = false;
 
@@ -104,8 +107,8 @@ inline bool MaxHeap<T>::insert(MaxHeap<T>* node)
 		this->_right = node;
 	}
 	// if the node can't be inserted to either of the children
-	else if (!(this->_left && this->_left->insert(node)) &&
-		!(this->_right && this->_right->insert(node)))
+	else if (!(this->_left && this->_left->_insert(node)) &&
+		!(this->_right && this->_right->_insert(node)))
 	{
 		return false;
 	}
@@ -115,6 +118,33 @@ inline bool MaxHeap<T>::insert(MaxHeap<T>* node)
 		this->_swap(left);
 	}
 	return true;
+}
+
+/*
+Find the last node (the node that represents the last element in the vector).
+Input: the index of the last element
+*/
+template<typename T>
+inline MaxHeap<T>* MaxHeap<T>::_findLast(size_t lastIndex)
+{
+	MaxHeap<T>* last = nullptr;
+
+	if (this->_index == lastIndex)
+	{
+		last = this;
+	}
+	else
+	{
+		if (this->_left)
+		{
+			last = this->_left->_findLast(lastIndex);
+		}
+		if (!last && this->_right)
+		{
+			last = this->_right->_findLast(lastIndex);
+		}
+	}
+	return last;
 }
 
 template<typename T>
@@ -151,8 +181,20 @@ Input: the value.
 template<typename T>
 inline void MaxHeap<T>::insert(const T& value)
 {
-	this->insert(new MaxHeap<T>(this->_items, this->_items->size()));
+	this->_insert(new MaxHeap<T>(this->_items, this->_items->size()));
 	this->_items->push_back(value);
+}
+
+/*
+Remove the maximum value (the root) from the heap.
+*/
+template<typename T>
+inline void MaxHeap<T>::extractMax()
+{
+	size_t lastIndex = this->_items->size() - 1;
+	MaxHeap<T>* last = this->_findLast(lastIndex);
+
+	(*this->_items)[this->_index] = last->getValue();
 }
 
 /*
