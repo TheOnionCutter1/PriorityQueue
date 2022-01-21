@@ -124,8 +124,9 @@ inline bool MaxHeap<T>::_insert(MaxHeap<T>* node)
 	{
 		return false;
 	}
-	// if we reached here, the node has been inserted.
-	if (left || this->getValue() < this->_right->getValue())
+	// if we reached here, the node had been inserted.
+	if ((left = this->_left && this->getValue() < this->_left->getValue()) ||
+		(this->_right && this->getValue() < this->_right->getValue()))
 	{
 		this->_swap(left);
 	}
