@@ -33,6 +33,8 @@ public:
 	void insert(const T& value);
 	void extractMax();
 
+	size_t size() const;
+
 	const T& getValue() const;
 
 	friend std::ostream& operator<<(std::ostream& os, const MaxHeap<T>& heap);
@@ -45,6 +47,16 @@ inline MaxHeap<T>::MaxHeap(std::vector<T>* items, size_t index) :
 {
 	this->_left = nullptr;
 	this->_right = nullptr;
+}
+
+/*
+Set a new value for this node.
+Input: the value.
+*/
+template<typename T>
+inline void MaxHeap<T>::_setValue(const T& value)
+{
+	this->_items->at(this->_index) = value;
 }
 
 /* Get the index of the left child, using this->_index */
@@ -67,7 +79,7 @@ Get the value of this node from the _items vector.
 template<typename T>
 inline const T& MaxHeap<T>::getValue() const
 {
-	return (*this->_items)[this->_index];
+	return this->_items->at(this->_index);
 }
 
 /*
@@ -81,8 +93,8 @@ inline void MaxHeap<T>::_swap(bool left)
 	size_t tmpIndex = this->_index;
 	T tmpValue = this->_items->at(tmpIndex);
 
-	this->_items->at(this->_index) = childToSwap->getValue();
-	childToSwap->_items->at(childToSwap->_index) = tmpValue;
+	this->_setValue(childToSwap->getValue());
+	childToSwap->_setValue(tmpValue);
 
 	this->_index = childToSwap->_index;
 	childToSwap->_index = tmpIndex;
@@ -187,6 +199,7 @@ inline void MaxHeap<T>::insert(const T& value)
 
 /*
 Remove the maximum value (the root) from the heap.
+Calling this function with only one node left will result in undefined behavior.
 */
 template<typename T>
 inline void MaxHeap<T>::extractMax()
@@ -195,6 +208,13 @@ inline void MaxHeap<T>::extractMax()
 	MaxHeap<T>* last = this->_findLast(lastIndex);
 
 	(*this->_items)[this->_index] = last->getValue();
+}
+
+/* get the size of the heap */
+template<typename T>
+inline size_t MaxHeap<T>::size() const
+{
+	return this->_items->size();
 }
 
 /*
